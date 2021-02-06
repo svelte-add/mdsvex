@@ -33,13 +33,13 @@ Preset.edit(["svelte.config.cjs"]).update((content) => {
 
 	result = result.replace("module.exports = {", `module.exports = {\n\textensions: [".svelte", ...mdsvexConfig.extensions],`);
 	if (!result.includes("mdsvex(")) result = result.replace("module.exports = {", `module.exports = {\n\t${addPreprocessor("")},`);
-	
+
 	return result;
 }).withTitle("Setting up the mdsvex preprocessor");
 
 Preset.edit(["src/routes/index.svelte"]).update((contents) => {
 	const p = `<p>Visit the <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte apps.</p>`;
 	return contents.replace(p, `${p}\n\t<p>Visit <a href="/markdown">the /markdown endpoint</a> to see some markdown rendered by mdsvex.</p>`);
-}).withTitle("Add a link to GraphiQL on the homepage");
+}).withTitle("Adding a link on the homepage to show off a markdown route");
 
 Preset.installDependencies().ifUserApproves();
