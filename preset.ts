@@ -17,7 +17,7 @@ Preset.editJson("package.json").merge({
 	},
 }).withTitle("Adding needed dependencies");
 
-Preset.edit(["svelte.config.js"]).update((content) => {
+Preset.edit(["svelte.config.cjs"]).update((content) => {
 	let result = content;
 
 	const matchSveltePreprocess = /(sveltePreprocess\(.*\))/m;
@@ -28,7 +28,7 @@ Preset.edit(["svelte.config.js"]).update((content) => {
 		return addPreprocessor(otherPreprocessors);
 	});
 
-	result = `const mdsvexConfig = require("./mdsvex.config");\n${result}`;
+	result = `const mdsvexConfig = require("./mdsvex.config.cjs");\n${result}`;
 	result = `const { mdsvex } = require("mdsvex");\n${result}`;
 
 	result = result.replace("module.exports = {", `module.exports = {\n\textensions: [".svelte", ...mdsvexConfig.extensions],`);

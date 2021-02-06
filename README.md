@@ -19,7 +19,7 @@ npx apply svelte-add/mdsvex # --no-ssh
 After the preset runs,
 * You can write Svelte in markdown syntax in `.svx` and `.md` files and import them as Svelte components.
 
-* You can [configure mdsvex](https://mdsvex.com/docs#options) in the `mdsvex.config.js` file.
+* You can [configure mdsvex](https://mdsvex.com/docs#options) in the `mdsvex.config.cjs` file.
 
 * [You cannot use `.svx` and `.md` files as endpoints.](https://github.com/svelte-add/mdsvex/issues/1)
 
