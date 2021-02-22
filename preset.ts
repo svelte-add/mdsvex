@@ -39,7 +39,7 @@ Preset.edit(["svelte.config.cjs"]).update((content) => {
 
 Preset.edit(["src/routes/index.svelte"]).update((contents) => {
 	const p = `<p>Visit the <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte apps.</p>`;
-	return contents.replace(p, `${p}\n\t<p>Visit <a href="/markdown">the /markdown endpoint</a> to see some markdown rendered by mdsvex.</p>`);
+	return contents.replace(p, `${p}\n\t<p>Visit <a href="/markdown">the /markdown page</a> to see some markdown rendered by mdsvex.</p>`);
 }).withTitle("Adding a link on the homepage to show off a markdown route");
 
 Preset.installDependencies().ifUserApproves();
