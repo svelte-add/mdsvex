@@ -23,7 +23,7 @@ Preset.edit(["svelte.config.cjs"]).update((content) => {
 	const matchSveltePreprocess = /(sveltePreprocess\(.*\))/m;
 	result = result.replace(matchSveltePreprocess, (_match, oldPreprocessor) => `[${oldPreprocessor}]`);
 
-	const matchPreprocessors = /preprocess:[\s\n]\[[\s\n]*((?:.|\n)+)[\s\n]*\]/m;
+	const matchPreprocessors = /preprocess:[\s\r\n]\[[\s\r\n]*((?:.|\r|\n)+)[\s\r\n]*\]/m;
 	result = result.replace(matchPreprocessors, (_match, otherPreprocessors) => {
 		return addPreprocessor(otherPreprocessors);
 	});
