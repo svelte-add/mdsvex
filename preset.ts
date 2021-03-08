@@ -9,7 +9,7 @@ const addPreprocessor = (otherPreprocessors) => `preprocess: [
 
 Preset.setName("svelte-add/mdsvex");
 
-Preset.extract().withTitle("Adding mdsvex config file");
+Preset.extract("mdsvex.config.cjs").withTitle("Adding mdsvex config file");
 
 Preset.editJson("package.json").merge({
 	devDependencies: {
@@ -37,9 +37,15 @@ Preset.edit(["svelte.config.cjs"]).update((content) => {
 	return result;
 }).withTitle("Setting up the mdsvex preprocessor");
 
-Preset.edit(["src/routes/index.svelte"]).update((contents) => {
-	const p = `<p>Visit the <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte apps.</p>`;
-	return contents.replace(p, `${p}\n\t<p>Visit <a href="/markdown">the /markdown page</a> to see some markdown rendered by mdsvex.</p>`);
-}).withTitle("Adding a link on the homepage to show off a markdown route");
+Preset.extract("src/components/Example.svx").withTitle("Adding an example mdsvex component");
 
+Preset.group((preset) => {
+	preset.extract("src/routes/example-markdown.md");
+
+	preset.edit(["src/routes/index.svelte"]).update((contents) => {
+		const closingMain = `</main>`;
+		return contents.replace(closingMain, `\t<p>Visit <a href="/example-markdown">the /example-markdown page</a> to see some markdown rendered by mdsvex.</p>\n${closingMain}`);
+	})
+}).withTitle("Adding a markdown page as an example and linking to it from the homepage");
+	
 Preset.installDependencies().ifUserApproves();
