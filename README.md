@@ -21,8 +21,6 @@ After the preset runs,
 
 * You can [configure mdsvex](https://mdsvex.com/docs#options) in the `mdsvex.config.cjs` file.
 
-* [You cannot use `.svx` and `.md` files as pages.](https://github.com/svelte-add/mdsvex/issues/1)
-
 * You can apply *another* [Svelte Adder](https://github.com/svelte-add/svelte-adders) to your project for more functionality.
 
 ## 😵 Help! I have a question
