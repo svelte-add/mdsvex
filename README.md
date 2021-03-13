@@ -11,7 +11,7 @@ npm init svelte@next
 # https://svelte.dev/blog/whats-the-deal-with-sveltekit#When_can_I_start_using_it
 ```
 
-Once that is set up, run this command in your project directory to set up PostCSS:
+Once that is set up, run this command in your project directory to set up mdsvex:
 ```sh
 npx apply svelte-add/mdsvex # --no-ssh
 ```
