@@ -7,13 +7,11 @@ This is an **experimental** command to run to add [mdsvex](https://mdsvex.com/) 
 You must start with a fresh copy of the official SvelteKit template, which is currently created by running this command:
 ```sh
 npm init svelte@next
-# By the way, please listen to its warnings that SvelteKit is an alpha project
-# https://svelte.dev/blog/whats-the-deal-with-sveltekit#When_can_I_start_using_it
 ```
 
 Once that is set up, run this command in your project directory to set up mdsvex:
 ```sh
-npx apply svelte-add/mdsvex # --no-ssh
+npx svelte-add mdsvex
 ```
 
 After the preset runs,
