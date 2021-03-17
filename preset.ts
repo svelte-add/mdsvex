@@ -1,4 +1,4 @@
-import { Preset } from "apply";
+import { Preset, color } from "apply";
 
 const newPreprocessor = `mdsvex(mdsvexConfig)`
 
@@ -6,10 +6,34 @@ const addPreprocessor = (otherPreprocessors) => `preprocess: [
 		${newPreprocessor},
 		${otherPreprocessors}]`;
 
+const exampleRemark = `remarkPlugins: [
+		[require("remark-github"), {
+			// Use your own repository
+			repository: "https://github.com/svelte-add/mdsvex.git",
+		}],
+		require("remark-abbr"),
+	]`;
+
+const exampleRehype = `rehypePlugins: [
+		require("rehype-slug"),
+		[require("rehype-autolink-headings"), {
+			behavior: "wrap",
+		}],
+	]`;
 
 Preset.setName("svelte-add/mdsvex");
 
+const EXCLUDE_EXAMPLES = "excludeExamples"
+Preset.option(EXCLUDE_EXAMPLES, false);
+
 Preset.extract("mdsvex.config.cjs").withTitle("Adding mdsvex config file");
+
+Preset.edit("mdsvex.config.cjs").update((content) => {
+	let result = content;
+	result = result.replace("remarkPlugins: []", exampleRemark);
+	result = result.replace("rehypePlugins: []", exampleRehype);
+	return result;
+}).withTitle("Showing example remark and rehype plugin usage").ifNotOption(EXCLUDE_EXAMPLES);
 
 Preset.editJson("package.json").merge({
 	devDependencies: {
@@ -17,7 +41,16 @@ Preset.editJson("package.json").merge({
 	},
 }).withTitle("Adding needed dependencies");
 
-Preset.edit(["svelte.config.cjs"]).update((content) => {
+Preset.editJson("package.json").merge({
+	devDependencies: {
+		"rehype-autolink-headings": "^5.0.1",
+		"rehype-slug": "^4.0.1",
+		"remark-abbr": "^1.4.1",
+		"remark-github": "^10.0.1",
+	},
+}).withTitle("Adding example dependencies (remark and rehype plugins)").ifNotOption(EXCLUDE_EXAMPLES);
+
+Preset.edit("svelte.config.cjs").update((content) => {
 	let result = content;
 
 	const matchSveltePreprocess = /(sveltePreprocess\(.*\))/m;
@@ -37,7 +70,7 @@ Preset.edit(["svelte.config.cjs"]).update((content) => {
 	return result;
 }).withTitle("Setting up the mdsvex preprocessor");
 
-Preset.extract("src/components/Example.svx").withTitle("Adding an example mdsvex component");
+Preset.extract("src/lib/Example.svx").withTitle("Adding an example mdsvex component").ifNotOption(EXCLUDE_EXAMPLES);
 
 Preset.group((preset) => {
 	preset.extract("src/routes/example-markdown.md");
@@ -46,6 +79,6 @@ Preset.group((preset) => {
 		const closingMain = `</main>`;
 		return contents.replace(closingMain, `\t<p>Visit <a href="/example-markdown">the /example-markdown page</a> to see some markdown rendered by mdsvex.</p>\n${closingMain}`);
 	})
-}).withTitle("Adding a markdown page as an example and linking to it from the homepage");
-	
-Preset.installDependencies().ifUserApproves();
+}).withTitle("Adding a markdown page as an example and linking to it from the homepage").ifNotOption(EXCLUDE_EXAMPLES);
+
+Preset.instruct(`Run ${color.magenta("npm install")}, ${color.magenta("pnpm install")}, or ${color.magenta("yarn")} to install dependencies`);

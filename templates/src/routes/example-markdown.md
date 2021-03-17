@@ -75,7 +75,7 @@ Now, a nested list:
 Notice again how text always lines up on 4-space indents (including
 that last line which continues item 3 above).
 
-Here's a link to [a website](http://foo.bar) and one to this site's [home page](/). If you set up the `rehype-slug` and `rehype-autolink-headings` plugins, [this will link to a section heading in the current
+Here's a link to [a website](http://foo.bar) and one to this site's [home page](/). Because the `rehype-slug` and `rehype-autolink-headings` plugins have been set up for you, [this will link to a section heading in the current
 doc](#an-h2-header).
 
 A horizontal rule follows.
@@ -85,4 +85,4 @@ A horizontal rule follows.
 And note that you can backslash-escape any punctuation characters
 which you wish to be displayed literally, ex.: \`foo\`, \*bar\*, etc.
 
-If you set up the `remark-github` plugin, this mention --- @svelte-add --- will turn into a link to the `svelte-add` GitHub page.
+This mention --- @svelte-add --- will turn into a link to the `svelte-add` GitHub page because the `remark-github` plugin is setup.
