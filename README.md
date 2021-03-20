@@ -3,7 +3,7 @@
 ## ❓ What is this?
 This is an **experimental** command to run to add [mdsvex](https://mdsvex.com/) to your SvelteKit project.
 
-## 🛠 Usage
+## 🧰 Adding to SvelteKit
 You must start with a fresh copy of the official SvelteKit template, which is currently created by running this command:
 ```sh
 npm init svelte@next
@@ -14,6 +14,18 @@ Once that is set up, run this command in your project directory to set up mdsvex
 npx svelte-add mdsvex
 ```
 
+## ⚡️ Adding to Vite
+You must start with a fresh copy of the official Vite-powered Svelte app template, which is currently created by running this command:
+```sh
+npm init @vitejs/app  # Choose svelte or svelte-ts
+```
+
+Once that is set up, run this command in your project directory to set up mdsvex:
+```sh
+npx svelte-add mdsvex
+```
+
+## 🛠 Usage
 After the preset runs,
 * You can write Svelte in markdown syntax in `.svx` and `.md` files and import them as Svelte components.
 

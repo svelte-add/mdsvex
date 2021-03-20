@@ -29,8 +29,37 @@ const exampleRehype = `rehypePlugins: [
 
 Preset.setName("svelte-add/mdsvex");
 
+const ROLLUP = "rollup"; // Not currently supported or inferred
+const ROLLUP_SAPPER = "rollup-sapper"; // Not currently supported or inferred
+const SNOWPACK = "snowpack"; // Not tested
+const SNOWPACK_SVELTEKIT = "snowpack-sveltekit";
+const WEBPACK = "webpack"; // Not currently supported or inferred
+const WEBPACK_SAPPER = "webpack-sapper"; // Not currently supported or inferred
+const VITE = "vite";
+const VITE_SVELTEKIT = "vite-sveltekit";
+const UNKNOWN_SETUP = "unknown";
+const SETUP = "setup";
+
 const EXCLUDE_EXAMPLES = "excludeExamples"
 Preset.option(EXCLUDE_EXAMPLES, false);
+
+Preset.hook((preset) => { preset.context[SETUP] = UNKNOWN_SETUP }).withoutTitle();
+Preset.edit("package.json").update((content, preset) => {
+	const pkg = JSON.parse(content);
+
+	const dependencies = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+
+	if (dependencies["@sveltejs/kit"]) {
+		if (dependencies["vite"]) preset.context[SETUP] = VITE_SVELTEKIT;
+		else if (dependencies["snowpack"]) preset.context[SETUP] = SNOWPACK_SVELTEKIT;
+	} else if (dependencies["vite"]) {
+		preset.context[SETUP] = VITE;
+	} else if (dependencies["snowpack"]) {
+		preset.context[SETUP] = SNOWPACK;
+	}
+
+	return content;
+}).withoutTitle();
 
 Preset.extract("mdsvex.config.cjs").withTitle("Adding mdsvex config file");
 
@@ -56,24 +85,28 @@ Preset.editJson("package.json").merge({
 	},
 }).withTitle("Adding example dependencies (remark and rehype plugins)").ifNotOption(EXCLUDE_EXAMPLES);
 
-Preset.edit("svelte.config.cjs").update((content) => {
-	let result = content;
+Preset.group((preset) => {
+	preset.extract("svelte.config.cjs").whenConflict("skip").withTitle("Adding `svelte.config.cjs`").if((preset) => [VITE].includes(preset.context[SETUP]));
 
-	const matchSveltePreprocess = /(sveltePreprocess\(.*\))/m;
-	result = result.replace(matchSveltePreprocess, (_match, oldPreprocessor) => `[${oldPreprocessor}]`);
+	preset.edit("svelte.config.cjs").update((content) => {
+		let result = content;
 
-	const matchPreprocessors = /preprocess:[\s\r\n]\[[\s\r\n]*((?:.|\r|\n)+)[\s\r\n]*\]/m;
-	result = result.replace(matchPreprocessors, (_match, otherPreprocessors) => {
-		return addPreprocessor(otherPreprocessors);
-	});
+		const matchSveltePreprocess = /(sveltePreprocess\(.*\))/m;
+		result = result.replace(matchSveltePreprocess, (_match, oldPreprocessor) => `[${oldPreprocessor}]`);
 
-	result = `const mdsvexConfig = require("./mdsvex.config.cjs");\n${result}`;
-	result = `const { mdsvex } = require("mdsvex");\n${result}`;
+		const matchPreprocessors = /preprocess:[\s\r\n]\[[\s\r\n]*((?:.|\r|\n)+)[\s\r\n]*\]/m;
+		result = result.replace(matchPreprocessors, (_match, otherPreprocessors) => {
+			return addPreprocessor(otherPreprocessors);
+		});
 
-	result = result.replace("module.exports = {", `module.exports = {\n\textensions: [".svelte", ...mdsvexConfig.extensions],`);
-	if (!result.includes("mdsvex(")) result = result.replace("module.exports = {", `module.exports = {\n\t${addPreprocessor("")},`);
+		result = `const mdsvexConfig = require("./mdsvex.config.cjs");\n${result}`;
+		result = `const { mdsvex } = require("mdsvex");\n${result}`;
 
-	return result;
+		result = result.replace("module.exports = {", `module.exports = {\n\textensions: [".svelte", ...mdsvexConfig.extensions],`);
+		if (!result.includes("mdsvex(")) result = result.replace("module.exports = {", `module.exports = {\n\t${addPreprocessor("")},`);
+
+		return result;
+	}).withTitle("Configuring it in svelte.config.cjs");
 }).withTitle("Setting up the mdsvex preprocessor");
 
 Preset.extract("src/lib/Example.svx").withTitle("Adding an example mdsvex component").ifNotOption(EXCLUDE_EXAMPLES);
@@ -81,10 +114,10 @@ Preset.extract("src/lib/Example.svx").withTitle("Adding an example mdsvex compon
 Preset.group((preset) => {
 	preset.extract("src/routes/example-markdown.md");
 
-	preset.edit(["src/routes/index.svelte"]).update((contents) => {
+	preset.edit("src/routes/index.svelte").update((contents) => {
 		const closingMain = `</main>`;
 		return contents.replace(closingMain, `\t<p>Visit <a href="/example-markdown">the /example-markdown page</a> to see some markdown rendered by mdsvex.</p>\n${closingMain}`);
-	})
-}).withTitle("Adding a markdown page as an example and linking to it from the homepage").ifNotOption(EXCLUDE_EXAMPLES);
+	});
+}).withTitle("Adding a markdown page as an example and linking to it from the homepage").ifNotOption(EXCLUDE_EXAMPLES).if((preset) => [SNOWPACK_SVELTEKIT, VITE_SVELTEKIT].includes(preset.context[SETUP]));
 
 Preset.instruct(`Run ${color.magenta("npm install")}, ${color.magenta("pnpm install")}, or ${color.magenta("yarn")} to install dependencies`);
