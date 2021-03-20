@@ -1,10 +1,16 @@
 import { Preset, color } from "apply";
 
-const newPreprocessor = `mdsvex(mdsvexConfig)`
-
-const addPreprocessor = (otherPreprocessors) => `preprocess: [
-		${newPreprocessor},
-		${otherPreprocessors}]`;
+const newPreprocessor = `mdsvex(mdsvexConfig)`;
+const addPreprocessor = (otherPreprocessors) => {
+	if (otherPreprocessors) {
+		// otherPreprocessors includes captured whitespace at the end.
+		// So, this will match the existing formatting, putting the closing ] 
+		// bracket on a new line only if it already was
+		return `preprocess: [\n\t\t${newPreprocessor},\n\t\t${otherPreprocessors}]`;
+	} else {
+		return `preprocess: [\n\t\t${newPreprocessor},\n\t]`;
+	}
+}
 
 const exampleRemark = `remarkPlugins: [
 		[require("remark-github"), {
