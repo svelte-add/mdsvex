@@ -72,7 +72,7 @@ Preset.edit("mdsvex.config.cjs").update((content) => {
 
 Preset.editJson("package.json").merge({
 	devDependencies: {
-		"mdsvex": "^0.8.9",
+		"mdsvex": "^0.9.0",
 	},
 }).withTitle("Adding needed dependencies");
 

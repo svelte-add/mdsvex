@@ -20,6 +20,6 @@
     "homepage": "https://github.com/svelte-add/mdsvex",
     "preset": "preset.ts",
     "devDependencies": {
-        "apply": "^0.2.13"
+        "apply": "^0.2.14"
     }
 }
