@@ -4,7 +4,7 @@
 
 # This is an example of an mdsvex component.
 
-You can `import` it as `$lib/Example.svx`.
+You can `import` it as `$lib/Example.svelte.md`.
 Just **delete** this file if you don't care.
 
 *By the way, the count is {count}.*

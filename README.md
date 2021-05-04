@@ -27,7 +27,7 @@ npx svelte-add mdsvex
 
 ## 🛠 Usage
 After the preset runs,
-* You can write Svelte in markdown syntax in `.svx` and `.md` files and import them as Svelte components.
+* You can write Svelte in markdown syntax in `.svelte.md`, `.md`, and `.svx` files and import them as Svelte components.
 
 * You can [configure mdsvex](https://mdsvex.com/docs#options) in the `mdsvex.config.cjs` file.
 

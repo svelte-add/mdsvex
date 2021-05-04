@@ -1,5 +1,5 @@
 module.exports = {
-	extensions: [".svx", ".md"],
+	extensions: [".svelte.md", ".md", ".svx"],
 	smartypants: {
 		dashes: "oldschool",
 	},
