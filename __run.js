@@ -140,11 +140,11 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 				type: "ArrayExpression",
 				elements: [],
 			},
-		}
+		};
 		configObject.properties.unshift(extensionsProperty);
 	}
 	if (extensionsProperty.value.type !== "ArrayExpression") throw new TypeError("expected array of strings for extensions in Svelte config");
-	
+
 	extensionsProperty.value.elements.unshift({
 		type: "Literal",
 		value: ".svelte",
@@ -162,7 +162,7 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 			property: {
 				type: "Identifier",
 				name: "extensions",
-			}
+			},
 		},
 	});
 
