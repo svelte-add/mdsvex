@@ -2,8 +2,8 @@
 export const heuristics = [
 	{
 		description: "`mdsvex` is installed",
-		async detector({ environment }) {
-			return "mdsvex" in environment.dependencies || "mdsvex" in environment.devDependencies;
+		async detector({ folderInfo }) {
+			return "mdsvex" in folderInfo.dependencies || "mdsvex" in folderInfo.devDependencies;
 		},
 	},
 	{

@@ -203,8 +203,8 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 };
 
 /** @type {import("../..").AdderRun<import("./__metadata.js").Options>} */
-export const run = async ({ environment, install, updateJavaScript }) => {
-	if (environment.packageType === "module")
+export const run = async ({ folderInfo, install, updateJavaScript }) => {
+	if (folderInfo.packageType === "module")
 		await updateJavaScript({
 			path: "/mdsvex.config.js",
 			async script({ typeScriptEstree }) {
@@ -223,7 +223,7 @@ export const run = async ({ environment, install, updateJavaScript }) => {
 			},
 		});
 
-	if (environment.packageType === "module")
+	if (folderInfo.packageType === "module")
 		await updateJavaScript({
 			path: "/svelte.config.js",
 			async script({ typeScriptEstree }) {
