@@ -118,7 +118,7 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 	}
 
 	const svelteConfigObject = getConfigExpression({ cjs, typeScriptEstree: svelteConfigAst });
-	if (svelteConfigObject.type !== "ObjectExpression") throw new Error("Svelte config must be an object");	
+	if (svelteConfigObject.type !== "ObjectExpression") throw new Error("Svelte config must be an object");
 
 	/** @type {import("estree").Property | undefined} */
 	let extensionsProperty;
