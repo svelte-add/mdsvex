@@ -1,4 +1,4 @@
-import { addImport, findImport, getConfigObject, getPreprocessArray } from "../../ast-tools.js";
+import { addImport, findImport, getConfigExpression, getPreprocessArray } from "../../ast-tools.js";
 
 /**
  * @param {import("../../ast-io.js").RecastAST} mdsvexConfigAst
@@ -6,7 +6,8 @@ import { addImport, findImport, getConfigObject, getPreprocessArray } from "../.
  * @returns {import("../../ast-io.js").RecastAST}
  */
 const updateMdsvexConfig = (mdsvexConfigAst, cjs) => {
-	const configObject = getConfigObject({ cjs, typeScriptEstree: mdsvexConfigAst });
+	const mdsvexConfigObject = getConfigExpression({ cjs, typeScriptEstree: mdsvexConfigAst });
+	if (mdsvexConfigObject.type !== "ObjectExpression") throw new Error("Svelte config must be an object");
 
 	/** @type {import("estree").ArrayExpression} */
 	const extensions = {
@@ -66,7 +67,7 @@ const updateMdsvexConfig = (mdsvexConfigAst, cjs) => {
 	/** @type {Record<string, import("estree").Property>} */
 	const properties = {};
 
-	for (const property of configObject.properties) {
+	for (const property of mdsvexConfigObject.properties) {
 		if (property.type !== "Property") continue;
 		if (property.key.type !== "Literal") continue;
 		if (typeof property.key.value !== "string") continue;
@@ -77,7 +78,7 @@ const updateMdsvexConfig = (mdsvexConfigAst, cjs) => {
 	for (const [key, value] of Object.entries(config)) {
 		if (key in properties) continue;
 
-		configObject.properties.push({
+		mdsvexConfigObject.properties.push({
 			type: "Property",
 			key: {
 				type: "Literal",
@@ -116,11 +117,12 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 		addImport({ cjs, named: { mdsvex: mdsvexImportedAs }, package: "mdsvex", typeScriptEstree: svelteConfigAst });
 	}
 
-	const configObject = getConfigObject({ cjs, typeScriptEstree: svelteConfigAst });
+	const svelteConfigObject = getConfigExpression({ cjs, typeScriptEstree: svelteConfigAst });
+	if (svelteConfigObject.type !== "ObjectExpression") throw new Error("Svelte config must be an object");	
 
 	/** @type {import("estree").Property | undefined} */
 	let extensionsProperty;
-	for (const property of configObject.properties) {
+	for (const property of svelteConfigObject.properties) {
 		if (property.type !== "Property") continue;
 		if (property.key.type !== "Literal") continue;
 		if (property.key.value === "extensions") extensionsProperty = property;
@@ -141,7 +143,7 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 				elements: [],
 			},
 		};
-		configObject.properties.unshift(extensionsProperty);
+		svelteConfigObject.properties.unshift(extensionsProperty);
 	}
 	if (extensionsProperty.value.type !== "ArrayExpression") throw new TypeError("expected array of strings for extensions in Svelte config");
 
@@ -166,7 +168,7 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 		},
 	});
 
-	const preprocessArray = getPreprocessArray({ configObject });
+	const preprocessArray = getPreprocessArray({ configObject: svelteConfigObject });
 
 	/** @type {import("estree").CallExpression | undefined} */
 	let mdsvexFunctionCall;

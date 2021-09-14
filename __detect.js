@@ -3,7 +3,7 @@ export const heuristics = [
 	{
 		description: "`mdsvex` is installed",
 		async detector({ folderInfo }) {
-			return "mdsvex" in folderInfo.dependencies || "mdsvex" in folderInfo.devDependencies;
+			return "mdsvex" in folderInfo.allDependencies;
 		},
 	},
 	{
