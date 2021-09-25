@@ -15,7 +15,7 @@ export const heuristics = [
 			/** @param {string} text */
 			const preprocessIsProbablySetup = (text) => {
 				if (!text.includes("mdsvex")) return false;
-				if (!text.includes("preprocess:")) return false;
+				if (!text.includes("preprocess")) return false;
 				if (!text.includes("mdsvex(mdsvexConfig)")) return false;
 
 				return true;
