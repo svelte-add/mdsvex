@@ -204,7 +204,7 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 	return svelteConfigAst;
 };
 
-/** @type {import("../..").AdderRun<import("./__metadata.js").Options>} */
+/** @type {import("../..").AdderRun<import("./__info.js").Options>} */
 export const run = async ({ folderInfo, install, updateJavaScript }) => {
 	const cjs = folderInfo.packageType !== "module";
 

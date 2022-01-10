@@ -1,3 +1,10 @@
+export const name = "mdsvex";
+
+/** @typedef {{}} Options */
+
+/** @type {import("../..").AdderOptions<Options>} */
+export const options = {};
+
 /** @type {import("../..").Heuristic[]} */
 export const heuristics = [
 	{
@@ -31,12 +38,12 @@ export const heuristics = [
 		},
 	},
 	{
-		description: "`mdsvex.config.cjs` or `mdsvex.config.js` exists",
+		description: "`mdsvex.config.js` exists and `mdsvex.config.cjs` does not exist",
 		async detector({ readFile }) {
-			const cjs = await readFile({ path: "/mdsvex.config.cjs" });
 			const js = await readFile({ path: "/mdsvex.config.js" });
+			const cjs = await readFile({ path: "/mdsvex.config.cjs" });
 
-			return cjs.exists || js.exists;
+			return js.exists && !cjs.exists;
 		},
 	},
 ];
