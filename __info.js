@@ -1,5 +1,9 @@
 export const name = "mdsvex";
 
+export const emoji = "🐧";
+
+export const usageMarkdown = ["You can write Svelte in markdown syntax in `.md`, `.svelte.md`, and `.svx` files and import them as Svelte components.", "You can [configure mdsvex](https://mdsvex.com/docs#options) in the `mdsvex.config.js` file."];
+
 /** @type {import("../..").Gatekeep} */
 export const gatekeep = async () => {
 	return { able: true };
