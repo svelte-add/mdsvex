@@ -1,4 +1,4 @@
-import { addImport, findImport, getConfigExpression, getPreprocessArray } from "../../ast-tools.js";
+import { addImport, findImport, setDefaultDefaultExport, getPreprocessArray } from "../../ast-tools.js";
 
 /**
  * @param {import("../../ast-io.js").RecastAST} mdsvexConfigAst
@@ -6,8 +6,55 @@ import { addImport, findImport, getConfigExpression, getPreprocessArray } from "
  * @returns {import("../../ast-io.js").RecastAST}
  */
 const updateMdsvexConfig = (mdsvexConfigAst, cjs) => {
-	const mdsvexConfigObject = getConfigExpression({ cjs, typeScriptEstree: mdsvexConfigAst });
-	if (mdsvexConfigObject.type !== "ObjectExpression") throw new Error("Svelte config must be an object");
+	let defineConfigImportedAs = findImport({ cjs, package: "mdsvex", typeScriptEstree: mdsvexConfigAst }).named["defineMDSveXConfig"];
+	// Add a defineConfig import if it's not there
+	if (!defineConfigImportedAs) {
+		defineConfigImportedAs = "defineConfig";
+		addImport({ cjs, named: { defineMDSveXConfig: defineConfigImportedAs }, package: "mdsvex", typeScriptEstree: mdsvexConfigAst });
+	}
+
+	const mdsvexConfigExpression = setDefaultDefaultExport({
+		cjs,
+		defaultValue: {
+			type: "CallExpression",
+			arguments: [
+				{
+					type: "ObjectExpression",
+					properties: [],
+				},
+			],
+			callee: {
+				type: "Identifier",
+				name: defineConfigImportedAs,
+			},
+			optional: false,
+		},
+		typeScriptEstree: mdsvexConfigAst,
+	});
+	/** @type {import("estree").ObjectExpression} */
+	let mdsvexConfigObject;
+	if (mdsvexConfigExpression.type !== "CallExpression") {
+		if (mdsvexConfigExpression.type !== "ObjectExpression") throw new Error("mdsvex config must be an object (which can be wrapped in a `defineConfig` call)");
+		mdsvexConfigObject = { ...mdsvexConfigExpression };
+
+		// @ts-ignore
+		mdsvexConfigExpression.type = "CallExpression";
+		// @ts-ignore
+		mdsvexConfigExpression.arguments = [mdsvexConfigObject];
+		// @ts-ignore
+		mdsvexConfigExpression.callee = {
+			type: "Identifier",
+			name: defineConfigImportedAs,
+		};
+		// @ts-ignore
+		mdsvexConfigExpression.optional = false;
+		// @ts-ignore
+		delete mdsvexConfigExpression.properties;
+	} else {
+		const mdsvexDefineConfigArgument = mdsvexConfigExpression.arguments[0];
+		if (mdsvexDefineConfigArgument.type !== "ObjectExpression") throw new Error("mdsvex defineConfig argument must be an object");
+		mdsvexConfigObject = mdsvexDefineConfigArgument;
+	}
 
 	/** @type {import("estree").ArrayExpression} */
 	const extensions = {
@@ -117,7 +164,14 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 		addImport({ cjs, named: { mdsvex: mdsvexImportedAs }, package: "mdsvex", typeScriptEstree: svelteConfigAst });
 	}
 
-	const svelteConfigObject = getConfigExpression({ cjs, typeScriptEstree: svelteConfigAst });
+	const svelteConfigObject = setDefaultDefaultExport({
+		cjs,
+		defaultValue: {
+			type: "ObjectExpression",
+			properties: [],
+		},
+		typeScriptEstree: svelteConfigAst,
+	});
 	if (svelteConfigObject.type !== "ObjectExpression") throw new Error("Svelte config must be an object");
 
 	/** @type {import("estree").Property | undefined} */
