@@ -238,7 +238,6 @@ const updateSvelteConfig = (svelteConfigAst, cjs) => {
 	if (!mdsvexFunctionCall) {
 		mdsvexFunctionCall = {
 			type: "CallExpression",
-			// @ts-ignore - I am not sure why this is typed wrongly (?)
 			arguments: [
 				{
 					type: "Identifier",
